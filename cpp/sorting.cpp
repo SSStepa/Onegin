@@ -10,15 +10,14 @@ WORK_RES my_qsort(void *arr, size_t arrLen, size_t elSize, int (* comp)(const vo
         return OK;
     
     unsigned char *divider = Partition((unsigned char *) arr, (unsigned char *) arr + (arrLen - 1) * elSize, elSize, comp);
-    
+   
     if (divider > (unsigned char *) arr)
-        my_qsort(arr, (divider - (unsigned char *) arr)/elSize, elSize, comp);
+        my_qsort(arr, (divider - (unsigned char *) arr)/elSize , elSize, comp);
 
-    if (divider < (unsigned char *) arr + arrLen * elSize) 
+    if (arrLen > 2 && (divider <= (unsigned char *) arr + arrLen * elSize))
         my_qsort((void *) divider, arrLen - (divider - (unsigned char *) arr)/elSize, elSize, comp);
-    
-    return OK;
 
+    return OK;
 }
 
 unsigned char *Partition(unsigned char *LeftPtr, unsigned char *RightPtr, size_t elSize, int (*comp)(const void *, const void *))
@@ -30,12 +29,14 @@ unsigned char *Partition(unsigned char *LeftPtr, unsigned char *RightPtr, size_t
 
     unsigned char *BaseElPtr = LeftPtr + ((RightPtr - LeftPtr)/2/elSize) * elSize; // /elSize * elSize to have num of ells 
 
-    while (LeftPtr <= RightPtr) {
-        while (LeftPtr < RightPtr && (*comp)((void *) LeftPtr, (void *) BaseElPtr) < 0)
+    while (LeftPtr < RightPtr) {
+        while (LeftPtr <= RightPtr && (*comp)((void *) LeftPtr, (void *) BaseElPtr) < 0)
             LeftPtr += elSize;
 
-        while (RightPtr > LeftPtr && (*comp)((void *) RightPtr, (void *) BaseElPtr) > 0)
+        while (RightPtr >= LeftPtr && (*comp)((void *) RightPtr, (void *) BaseElPtr) > 0)
             RightPtr -= elSize;
+
+        if (LeftPtr >= RightPtr) break;
 
         if      (LeftPtr  == BaseElPtr) BaseElPtr = RightPtr;
         else if (RightPtr == BaseElPtr) BaseElPtr = LeftPtr;
@@ -45,6 +46,7 @@ unsigned char *Partition(unsigned char *LeftPtr, unsigned char *RightPtr, size_t
         LeftPtr += elSize;
         RightPtr -= elSize; // can point to element not in arr
     }
+
     return LeftPtr;
 }
 
@@ -58,6 +60,8 @@ WORK_RES SwapElls(unsigned char *firstPtr, unsigned char *secondPtr, size_t elSi
     int buffInt = 0;
     short buffShort = 0;
     char buffChar = 0;
+
+    printf(RED "%s %s %llu\n", *(char **) firstPtr, *(char **) secondPtr, elSize);
 
     // first stage - fill main part
     while (elSize/sizeof(buff) > 0) {
@@ -85,8 +89,8 @@ WORK_RES SwapElls(unsigned char *firstPtr, unsigned char *secondPtr, size_t elSi
 
 int CompStrNormal(const void *firstLinePtr, const void *secondLinePtr)
 {
-    const char *fLine = *((char **) firstLinePtr);
-    const char *sLine = *((char **) secondLinePtr);
+    const char *fLine = *((const char * const *) firstLinePtr);
+    const char *sLine = *((const char * const *) secondLinePtr);
     
     size_t fInd = 0;
     size_t sInd = 0;
@@ -102,27 +106,36 @@ int CompStrNormal(const void *firstLinePtr, const void *secondLinePtr)
         sInd++;
     }
 
-    return fLine[fInd] - sLine[sInd];
+    return tolower(fLine[fInd]) - tolower(sLine[sInd]);
 }
 
 int CompStrReversed(const void *firstLinePtr, const void *secondLinePtr)
 {
-    const char *fLine = *((char **) firstLinePtr);
-    const char *sLine = *((char **) secondLinePtr);
+    const char *fLine = *((const char * const *) firstLinePtr);
+    const char *sLine = *((const char * const *) secondLinePtr);
     
-    size_t fLen = strlen(fLine);
-    size_t sLen = strlen(sLine);
+    printf(BLU "%s %s" COLOR_RESET, fLine, sLine);
+    getchar();
 
-    while(fLen > 0 && sLen > 0) {
-        fLen--;
-        sLen--;
+    size_t fInd = strlen(fLine);
+    size_t sInd = strlen(sLine);
 
-        while (fLen > 0 && !isalpha(fLine[fLen])) fLen--;
-        while (sLen > 0 && !isalpha(sLine[sLen])) sLen--;
-
-        if (tolower(fLine[fLen]) != tolower(sLine[sLen]))
-            break;
+    while(fInd > 0 && sInd > 0) {
+        do {
+            fInd--;
+        } while (fInd > 0 && !isalpha(fLine[fInd]));
+        do {
+            sInd--;
+        } while (sInd > 0 && !isalpha(sLine[sInd]));
+        
+        if (tolower(fLine[fInd]) != tolower(sLine[sInd])) {
+            // printf("%s\n%s\n%d\n\n", fLine, sLine, tolower(fLine[fInd]) - tolower(sLine[sInd]));
+            return tolower(fLine[fInd]) - tolower(sLine[sInd]);
+        }
     }
 
-    return fLine[fLen] - sLine[sLen];
+    if (fInd == sInd) return  0;
+    if (fInd == 0)    return -1;
+    
+    return  1;
 }

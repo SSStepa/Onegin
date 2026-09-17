@@ -11,7 +11,7 @@
 
 WORK_RES my_qsort(void *arr, size_t arrLen, size_t size, int (* comp)(const void *, const void *));
 WORK_RES SwapElls(unsigned char *firstPtr, unsigned char *secondPtr, size_t size);
-unsigned char *Partition(unsigned char *LeftInd,unsigned char *RightInd, size_t elSize, int (*comp)(const void *, const void *));
+unsigned char *Partition(unsigned char *LeftInd,unsigned char *RightInd, size_t elSize, int (*comp)(const void *, const void *));                                                                                                                                                                                               
 
 int CompStrNormal(const void *firstLinePtr, const void *secondLinePtr);
 int CompStrReversed(const void *firstLinePtr, const void *secondLinePtr);

@@ -1,10 +1,11 @@
 #include <math.h>
 
 #include "../headers/sorting.h"
+#include "../headers/fileWork.h"
 
 int main()
 {
-    const char *data[] = {
+    const char *data1[] = {
    "My uncles goodness is extreme,\0",
    "If seriously he hath disease;\0",
    "He hath acquired the worlds esteem\0",
@@ -18,21 +19,23 @@ int main()
    "Beneath his head the pillow smooth,\0",
    "And physic bring with mournful face,\0",
    "To sigh and meditate alone:\0",
-   "When will the devil take his own\0!"
+   "When will the devil take his own!\0"
     };
 
-    int Num = sizeof(data)/sizeof(data[0]);
+    size_t dataSize = 0;
 
-    my_qsort(data, Num, sizeof(data[0]), CompStrNormal);
+    char **data = GetFileInLines("Onegin.txt", &dataSize);
 
-    for (size_t ind = 0; ind < Num; ind++) {
-        printf("<%s>\n", data[ind]);
+    my_qsort(data, dataSize, sizeof(data[0]), CompStrNormal);
+
+    for (size_t ind = 0; ind < dataSize; ind++) {
+        printf("%s", data[ind]);
     }
 
-    printf(GRN "START SECOND PART" COLOR_RESET);
+    printf(GRN "START SECOND PART\n" COLOR_RESET);
 
-    my_qsort(data, Num, sizeof(data[0]), CompStrReversed);
-    for (size_t ind = 0; ind < Num; ind++) {
-        printf("<%s>\n", data[ind]);
+    my_qsort(data, dataSize, sizeof(data[0]), CompStrReversed);
+    for (size_t ind = 0; ind < dataSize; ind++) {
+        printf("%s", data[ind]);
     }
 }
