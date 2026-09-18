@@ -89,6 +89,9 @@ WORK_RES SwapElls(unsigned char *firstPtr, unsigned char *secondPtr, size_t elSi
 
 int CompStrNormal(const void *firstLinePtr, const void *secondLinePtr)
 {
+    assert(firstLinePtr != NULL);
+    assert(secondLinePtr != NULL);
+
     const char *fLine = *((const char * const *) firstLinePtr);
     const char *sLine = *((const char * const *) secondLinePtr);
     
@@ -111,6 +114,9 @@ int CompStrNormal(const void *firstLinePtr, const void *secondLinePtr)
 
 int CompStrReversed(const void *firstLinePtr, const void *secondLinePtr)
 {
+    assert(firstLinePtr != NULL);
+    assert(secondLinePtr != NULL);
+
     const char *fLine = *((const char * const *) firstLinePtr);
     const char *sLine = *((const char * const *) secondLinePtr);
     
@@ -128,10 +134,8 @@ int CompStrReversed(const void *firstLinePtr, const void *secondLinePtr)
             sInd--;
         } while (sInd > 0 && !isalpha(sLine[sInd]));
         
-        if (tolower(fLine[fInd]) != tolower(sLine[sInd])) {
-            // printf("%s\n%s\n%d\n\n", fLine, sLine, tolower(fLine[fInd]) - tolower(sLine[sInd]));
+        if (tolower(fLine[fInd]) != tolower(sLine[sInd]))
             return tolower(fLine[fInd]) - tolower(sLine[sInd]);
-        }
     }
 
     if (fInd == sInd) return  0;

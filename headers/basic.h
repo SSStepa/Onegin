@@ -11,8 +11,19 @@ enum WORK_RES {
     OK = 0, // all good
     WRIN = 1, // function got bad args
     NOMEM = 2, // not enought memory
-    NOFILE = 3 // no file to open.
+    FILEERR = 3 // no file to open.
 };
+
+/**
+ * @brief struct to store info about string: length and pointer to first element
+ * str - pointer to the first element of the string
+ * len - length of the string (with no \0)
+ */
+struct String {
+    char *str;
+    size_t len;
+};
+
 
 /**
  * Basic colors
