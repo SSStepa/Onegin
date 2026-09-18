@@ -1,3 +1,7 @@
+/**
+ * @file soring.h
+ * @brief sorting functions and comporators
+ */
 #ifndef SORTING_H
 #define SORTING_H
 
@@ -8,17 +12,24 @@
 #include <string.h>
 
 #include "basic.h"
+#include "fileWork.h"
 
-WORK_RES my_qsort(void *arr, size_t arrLen, size_t size, int (* comp)(const void *, const void *));
+/**
+ * @brief my qsort realization
+ * 
+ * @param [out] arr data to sort
+ * @param [in] arrLen amount of elements in arr
+ * @param [in] elSize sizeof one element
+ * @param [in] comp function to cumpare elements
+ * 
+ * @return result of work in terms of WORK_RES.
+ */
+WORK_RES my_qsort(void *arr, size_t arrLen, size_t elSize, int (* comp)(const void *, const void *));
 WORK_RES SwapElls(unsigned char *firstPtr, unsigned char *secondPtr, size_t size);
 unsigned char *Partition(unsigned char *LeftInd,unsigned char *RightInd, size_t elSize, int (*comp)(const void *, const void *));                                                                                                                                                                                               
 
 int CompStrNormal(const void *firstLinePtr, const void *secondLinePtr);
 int CompStrReversed(const void *firstLinePtr, const void *secondLinePtr);
-
-const int NUMLEN = 10;
-const int STRNUM = 12;
-const int STRLEN = 20;
 
  /**
   * @brief changes two parts of mamory one with another

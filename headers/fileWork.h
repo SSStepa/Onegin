@@ -29,6 +29,8 @@ const int MAXBUFF = 100;
  * 
  * dataPtr pointer to dynamic array with lines NEEDS FREE.
  * 
+ * dataLen len of data array.
+ * 
  * indexDyn  pointer to dynamic array of strings of String NEEDS FREE (free from firstLine);
  * 
  * firstLine pointer to beginning of index. used for FREE
@@ -37,6 +39,7 @@ const int MAXBUFF = 100;
  */
 struct FileData {
     char   *dataPtr;
+    size_t dataLen;
     String *firstLine;
     String *indexDyn;
     size_t    indLen; 
@@ -52,6 +55,18 @@ struct FileData {
  * @return pointer to first line pointer.
  */
 char **GetFileInLines(const char *FileName, size_t *dataSize);
+
+/**
+ * @brief frees all dynamic mamory from struct FileData.
+ * 
+ * @param [out] data struct to clear.
+ * 
+ * @return result of work in terms of WORK_RES.
+ */
+WORK_RES ClearFileData(FileData *data);
+
+
+WORK_RES WriteToFile(int fileDes, String *data, size_t elNum);
 
 /**
  * @brief funcion to read file as bull and then parse it into lines.

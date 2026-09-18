@@ -8,7 +8,7 @@ WORK_RES my_qsort(void *arr, size_t arrLen, size_t elSize, int (* comp)(const vo
     
     if (arrLen < 2) 
         return OK;
-    
+
     unsigned char *divider = Partition((unsigned char *) arr, (unsigned char *) arr + (arrLen - 1) * elSize, elSize, comp);
    
     if (divider > (unsigned char *) arr)
@@ -61,8 +61,6 @@ WORK_RES SwapElls(unsigned char *firstPtr, unsigned char *secondPtr, size_t elSi
     short buffShort = 0;
     char buffChar = 0;
 
-    printf(RED "%s %s %llu\n", *(char **) firstPtr, *(char **) secondPtr, elSize);
-
     // first stage - fill main part
     while (elSize/sizeof(buff) > 0) {
         MacroChangeMamory(buff, unsigned long long, firstPtr, secondPtr);       
@@ -92,8 +90,11 @@ int CompStrNormal(const void *firstLinePtr, const void *secondLinePtr)
     assert(firstLinePtr != NULL);
     assert(secondLinePtr != NULL);
 
-    const char *fLine = *((const char * const *) firstLinePtr);
-    const char *sLine = *((const char * const *) secondLinePtr);
+    const String fLineInf = *(const String *) firstLinePtr;
+    const String sLineInf = *(const String *) secondLinePtr;
+
+    char *fLine = fLineInf.str;
+    char *sLine = sLineInf.str;
     
     size_t fInd = 0;
     size_t sInd = 0;
@@ -112,19 +113,20 @@ int CompStrNormal(const void *firstLinePtr, const void *secondLinePtr)
     return tolower(fLine[fInd]) - tolower(sLine[sInd]);
 }
 
+
 int CompStrReversed(const void *firstLinePtr, const void *secondLinePtr)
 {
     assert(firstLinePtr != NULL);
     assert(secondLinePtr != NULL);
 
-    const char *fLine = *((const char * const *) firstLinePtr);
-    const char *sLine = *((const char * const *) secondLinePtr);
+    const String fLineInf = *(const String *) firstLinePtr;
+    const String sLineInf = *(const String *) secondLinePtr;
     
-    printf(BLU "%s %s" COLOR_RESET, fLine, sLine);
-    getchar();
-
-    size_t fInd = strlen(fLine);
-    size_t sInd = strlen(sLine);
+    char *fLine = fLineInf.str;
+    char *sLine = sLineInf.str;
+    
+    size_t fInd = fLineInf.len;
+    size_t sInd = sLineInf.len;
 
     while(fInd > 0 && sInd > 0) {
         do {
@@ -134,8 +136,11 @@ int CompStrReversed(const void *firstLinePtr, const void *secondLinePtr)
             sInd--;
         } while (sInd > 0 && !isalpha(sLine[sInd]));
         
-        if (tolower(fLine[fInd]) != tolower(sLine[sInd]))
+        // printf(CYN "<%s><%c>\n<%s><%c>\n\n" COLOR_RESET, fLine, tolower(fLine[fInd]), sLine, tolower(sLine[sInd]));
+        if (tolower(fLine[fInd]) != tolower(sLine[sInd])) {
+            // printf(YEL "<%s><%c>\n<%s><%c>\n\n" COLOR_RESET, fLine, tolower(fLine[fInd]), sLine, tolower(sLine[sInd]));
             return tolower(fLine[fInd]) - tolower(sLine[sInd]);
+        }
     }
 
     if (fInd == sInd) return  0;

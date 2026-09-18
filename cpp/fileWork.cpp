@@ -24,16 +24,16 @@ FileData GetFileFull(const char *FileName)
         exit(NOMEM);
     }
 
-    // printf(CYN "I've created data buffer\n" COLOR_RESET);
-    // fflush(stdout);
+    int fileLen = read(fileDes, (void *) data.dataPtr, st.st_size);
+    if (fileLen < 0) {
+        printf(RED "GetFileFull: ERROR WHILE READING FROM FILE\n" COLOR_RESET);
+        exit(FILEERR);
+    }
 
-    long fileLen = read(fileDes, (void *) data.dataPtr, st.st_size);
     data.dataPtr = (char *) realloc(data.dataPtr, fileLen + 1);
     *(data.dataPtr + fileLen) = '\0';
     
-    // printf(CYN "I've read data from file\n" COLOR_RESET);
-    // printf("It starts <%c>\n", data.dataPtr[0]);
-    // fflush(stdout);
+    data.dataLen = (size_t) fileLen;
 
     data.indexDyn = (String *) calloc(MINNUM, sizeof(String));
     size_t indMax = MINNUM;
@@ -44,51 +44,68 @@ FileData GetFileFull(const char *FileName)
     *data.indexDyn = {.str = data.dataPtr};
     data.indLen++;
 
-    // printf(CYN "I added pointer to first line and it has second symb: <%c>\n" COLOR_RESET, (data.indexDyn -> str)[1]);
-    // fflush(stdout);
-
-    size_t lineLen = 0;
-    for (size_t ind = 0; ind < fileLen; ind++, lineLen++){
-        // printf(YEL "I'm in cucle number <%llu>\n" COLOR_RESET, ind);
-        // printf(BLU "And it is <%c>\n" COLOR_RESET, data.dataPtr[ind]);
-        // fflush(stdout);
-
+    size_t lineLen = 1;
+    for (size_t ind = 0; ind < (size_t) fileLen; ind++, lineLen++){
         if (data.dataPtr[ind] == '\n') {
             data.dataPtr[ind] = '\0';
-            // printf(YEL "And now it is <%c>\n" COLOR_RESET, data.dataPtr[ind]);
-            // fflush(stdout);
-
-            // printf(GRN "Now indLen is <%llu>" COLOR_RESET, data.indLen);
-            // length of previous
+            
             (data.indexDyn + data.indLen - 1) -> len = lineLen;
             lineLen = 0;
 
-            // printf(CYN "Now i know previous datalen and it is <%llu>\n" COLOR_RESET, (data.indexDyn + data.indLen -1) -> len);
-            // fflush(stdout);
-
             // point to new line
             (data.indexDyn + data.indLen++) -> str = &data.dataPtr[ind + 1];
-            // printf(CYN "I've complitted line:\n" COLOR_RESET);
-            // printf("%s\n", (data.indexDyn + data.indLen - 1) -> str);
-            // fflush(stdout);
 
             if (indMax == data.indLen) {
                 indMax *= 2;
                 String *temp = (String *) realloc(data.indexDyn, indMax * sizeof(String));
                 if (temp == NULL) {
-                    // printf(RED "GetFileFull: NOT ENOUGHT MEMORY FOR INDEX RESYZE\n" COLOR_RESET);
-                    // exit(NOMEM);
+                    printf(RED "GetFileFull: NOT ENOUGHT MEMORY FOR INDEX RESYZE\n" COLOR_RESET);
+                    exit(NOMEM);
                 }
                 data.indexDyn = temp;
             }
         }
     }
+    (data.indexDyn + data.indLen - 1) -> len = lineLen;
+
+    close(fileDes);
 
     return data;
 }
 
+WORK_RES WriteToFile(int fileDes, String *data, size_t elNum)
+{
+    assert(data != NULL);
+
+    if (fileDes < 0) {
+        printf(RED "WriteToFile: WRONG FILE DESCRIPTOR" COLOR_RESET);
+        exit(WRIN);
+    }
+
+    for (size_t ind = 0; ind < elNum; ind++) {
+        ((data + ind) -> str)[(data + ind)->len - 1] = '\n'; // TODO normal readible form
+        write(fileDes, (data + ind) -> str, (unsigned int) ((data + ind) -> len));
+    }
+    write(fileDes, "\n", 1);
+
+    return OK;
+}
+
+WORK_RES ClearFileData(FileData *data)
+{
+    assert(data != NULL);
+
+    free(data -> firstLine);
+    free(data -> dataPtr);
+
+    return OK;
+}
+
 char **GetFileInLines(const char *FileName, size_t *dataSize)
 {
+    assert(FileName != NULL);
+    assert(dataSize != NULL);
+
     FILE *file = fopen(FileName, "r");
     if (file == NULL) {
         printf(RED "ERROR: NO FILE\n" COLOR_RESET);
