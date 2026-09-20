@@ -16,7 +16,7 @@ WORK_RES FlagsParse(int argc, char *argv[], const char **FileToReadFrom, const c
             break;
         case 'h':
             ShowHelp();
-            break;
+            exit(0);
         
         default:
             $err("BAD FLAGS IN CALL", WRIN);

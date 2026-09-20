@@ -6,7 +6,7 @@
 
 #include "basic.h"
 
-const char *const OPTS = "i:o:";
+const char *const OPTS = "i:o:h";
 
 /**
  * @breif parses flags from command line
