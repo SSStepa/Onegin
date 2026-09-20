@@ -25,10 +25,48 @@
  * @return result of work in terms of WORK_RES.
  */
 WORK_RES my_qsort(void *arr, size_t arrLen, size_t elSize, int (* comp)(const void *, const void *));
+
+/**
+ * @brief swaps ellements in data
+ * 
+ * @param [out] firstPtr pointer to first element to change
+ * @param [out] secondPtr pointer to second element to change
+ * @param [in] size size of one element to swap
+ * 
+ * @return result of work in terms of WORK_RES.
+ */
 WORK_RES SwapElls(unsigned char *firstPtr, unsigned char *secondPtr, size_t size);
+
+/**
+ * @brief Partition for my qsort. Divides array to two: less or more than base element
+ * 
+ * @param [inout] LeftInd beginning of the array
+ * @param [inout] RightInd end of the array
+ * @param [in] elSize size one of element
+ * @param [in] comp funciton to compare elements.
+ * 
+ * @return pointer to dividing element
+ */
 unsigned char *Partition(unsigned char *LeftInd,unsigned char *RightInd, size_t elSize, int (*comp)(const void *, const void *));                                                                                                                                                                                               
 
+/**
+ * @brief func to compare two strings ignoring letter from left to right
+ * 
+ * @param [in] firstLinePtr pointer to first string in terms of poiner to String
+ * @param [in] secondLinePtr pointer to second string in terms of pointer to String
+ * 
+ * @return result of comporation as int
+ */
 int CompStrNormal(const void *firstLinePtr, const void *secondLinePtr);
+
+/**
+ * @brief func to compare two strings ignoring letter from right to left
+ * 
+ * @param [in] firstLinePtr pointer to first string in terms of poiner to String
+ * @param [in] secondLinePtr pointer to second string in terms of pointer to String
+ * 
+ * @return result of comporation as int
+ */
 int CompStrReversed(const void *firstLinePtr, const void *secondLinePtr);
 
  /**

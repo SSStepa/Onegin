@@ -65,7 +65,15 @@ char **GetFileInLines(const char *FileName, size_t *dataSize);
  */
 WORK_RES ClearFileData(FileData *data);
 
-
+/**
+ * @brief gets arr of lines and writes it to file. While running changes '\0' to '\n' and back.
+ * 
+ * @param [in] fileDes descriptor of file to write in
+ * @param [in] data arr of strings to write into file
+ * @param [in] elNum rumber of lines to write into file.
+ * 
+ * @return result of work in terms of WORK_RES
+ */
 WORK_RES WriteToFile(int fileDes, String *data, size_t elNum);
 
 /**

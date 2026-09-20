@@ -83,7 +83,7 @@ WORK_RES WriteToFile(int fileDes, String *data, size_t elNum)
     }
 
     for (size_t ind = 0; ind < elNum; ind++) {
-        ((data + ind) -> str)[(data + ind)->len - 1] = '\n'; // TODO normal readible form
+        ((data + ind) -> str)[(data + ind)->len - 1] = '\n';
         write(fileDes, (data + ind) -> str, (unsigned int) ((data + ind) -> len));
     }
     write(fileDes, "\n", 1);
