@@ -95,4 +95,15 @@ WORK_RES WriteTextToFile(int fileDes, char* data, size_t dataLen);
  * @return struct FileData.
  */
 FileData GetFileFull(const char *FileName);
+
+/**
+ * @brief opens file, reads full it, writes data to data and closes it
+ * 
+ * @param [out] data struct to write data in
+ * @param [in] fileName name of file to open
+ * 
+ * @return result of work in terms of WORK_RES
+ */
+WORK_RES TakeInfoFromFile(FileData *data, const char *fileName);
+
 #endif

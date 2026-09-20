@@ -1,27 +1,12 @@
 #include "../headers/fileWork.h"
 
-FileData GetFileFull(const char *FileName) 
+FileData GetFileFull(const char *fileName) 
 {
-    assert(FileName != NULL);
-
-    int fileDes = open(FileName, O_RDONLY, 0);
-    if (fileDes == -1) $err("NO FILE TO READ FROM IN GetFileFull", FILEERR);
-
-    struct stat st;
-    if (fstat(fileDes, &st)) $err("ERROR IN FILE WHILE TRYING TO fstat", FILEERR);
+    assert(fileName != NULL);
 
     FileData data = {};
 
-    data.dataPtr = (char *) calloc(st.st_size + 1, sizeof(char));
-    if (data.dataPtr == NULL) $err("NOT ENOUGHT MEMORY TO READ FILE AS FULL", NOMEM);
-
-    int fileLen = read(fileDes, (void *) data.dataPtr, st.st_size);
-    if (fileLen < 0) $err("ERROR WHILE READING FROM FILE", FILEERR);
-
-    data.dataPtr = (char *) realloc(data.dataPtr, fileLen + 1);
-    *(data.dataPtr + fileLen) = '\0';
-    
-    data.dataLen = (size_t) fileLen;
+    TakeInfoFromFile(&data, fileName);
 
     data.indexDyn = (String *) calloc(MINNUM, sizeof(String));
     size_t indMax = MINNUM;
@@ -31,7 +16,7 @@ FileData GetFileFull(const char *FileName)
     data.indLen++;
 
     size_t lineLen = 1;
-    for (size_t ind = 0; ind < (size_t) fileLen; ind++, lineLen++){
+    for (size_t ind = 0; ind < data.dataLen; ind++, lineLen++){
         if (data.dataPtr[ind] == '\n') {
             data.dataPtr[ind] = '\0';
             
@@ -52,9 +37,35 @@ FileData GetFileFull(const char *FileName)
     }
     (data.indexDyn + data.indLen - 1) -> len = lineLen;
 
+    return data;
+}
+
+WORK_RES TakeInfoFromFile(FileData *data, const char *fileName)
+{
+    assert(data != NULL);
+    assert(fileName != NULL);
+
+    int fileDes = open(fileName, O_RDONLY, 0);
+    if (fileDes == -1) $err("NO FILE TO READ FROM IN GetFileFull", FILEERR);
+
+    struct stat st;
+    if (fstat(fileDes, &st)) $err("ERROR IN FILE WHILE TRYING TO fstat", FILEERR);
+
+
+    data -> dataPtr = (char *) calloc(st.st_size + 1, sizeof(char));
+    if (data ->dataPtr == NULL) $err("NOT ENOUGHT MEMORY TO READ FILE AS FULL", NOMEM);
+
+    int fileLen = read(fileDes, (void *) data -> dataPtr, st.st_size);
+    if (fileLen < 0) $err("ERROR WHILE READING FROM FILE", FILEERR);
+
+    data -> dataPtr = (char *) realloc(data -> dataPtr, fileLen + 1);
+    *(data -> dataPtr + fileLen) = '\0';
+    
+    data -> dataLen = (size_t) fileLen;
+
     close(fileDes);
 
-    return data;
+    return OK;
 }
 
 WORK_RES WriteStringsToFile(int fileDes, String *data, size_t elNum)
@@ -97,12 +108,12 @@ WORK_RES ClearFileData(FileData *data)
     return OK;
 }
 
-char **GetFileInLines(const char *FileName, size_t *dataSize)
+char **GetFileInLines(const char *fileName, size_t *dataSize)
 {
-    assert(FileName != NULL);
+    assert(fileName != NULL);
     assert(dataSize != NULL);
 
-    FILE *file = fopen(FileName, "r");
+    FILE *file = fopen(fileName, "r");
     if (file == NULL) {
         printf(RED "ERROR: NO FILE\n" COLOR_RESET);
         exit(FILEERR);
