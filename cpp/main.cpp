@@ -11,15 +11,16 @@ int main()
     int fileOut = open("output.txt", O_WRONLY, 0);
 
     my_qsort(data.indexDyn, data.indLen, sizeof(data.indexDyn[0]), CompStrNormal);
-    WriteToFile(fileOut, data.indexDyn, data.indLen);
+    WriteStringsToFile(fileOut, data.indexDyn, data.indLen);
 
     qsort(data.indexDyn, data.indLen, sizeof(data.indexDyn[0]), CompStrReversed);
-    WriteToFile(fileOut, data.indexDyn, data.indLen);
+    WriteStringsToFile(fileOut, data.indexDyn, data.indLen);
 
-    // TODO create function
-    write(fileOut, data.dataPtr, (unsigned int) data.dataLen);
+    WriteTextToFile(fileOut, data.dataPtr, data.dataLen);
 
     ClearFileData(&data);
+
+    close(fileOut);
 
     return 0;
 }

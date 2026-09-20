@@ -74,8 +74,18 @@ WORK_RES ClearFileData(FileData *data);
  * 
  * @return result of work in terms of WORK_RES
  */
-WORK_RES WriteToFile(int fileDes, String *data, size_t elNum);
+WORK_RES WriteStringsToFile(int fileDes, String *data, size_t elNum);
 
+/**
+ * @brief writes text to file as one portion.
+ * 
+ * @param [in] fileDes descriptor of file to write in
+ * @param [in] data data to write into file
+ * @param [in] dataLen length of data to write in
+ * 
+ * @return result of work in terms of WORK_RES.
+ */
+WORK_RES WriteTextToFile(int fileDes, char* data, size_t dataLen);
 /**
  * @brief funcion to read file as bull and then parse it into lines.
  * 

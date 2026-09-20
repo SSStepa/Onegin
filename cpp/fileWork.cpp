@@ -73,22 +73,39 @@ FileData GetFileFull(const char *FileName)
     return data;
 }
 
-WORK_RES WriteToFile(int fileDes, String *data, size_t elNum)
+WORK_RES WriteStringsToFile(int fileDes, String *data, size_t elNum)
 {
     assert(data != NULL);
 
     if (fileDes < 0) {
-        printf(RED "WriteToFile: WRONG FILE DESCRIPTOR" COLOR_RESET);
+        printf(RED "WriteStringsToFile: WRONG FILE DESCRIPTOR" COLOR_RESET);
         exit(WRIN);
     }
 
     for (size_t ind = 0; ind < elNum; ind++) {
         ((data + ind) -> str)[(data + ind)->len - 1] = '\n';
         write(fileDes, (data + ind) -> str, (unsigned int) ((data + ind) -> len));
+        ((data + ind) -> str)[(data + ind)->len - 1] = '\0';
     }
     write(fileDes, "\n", 1);
 
     return OK;
+}
+
+WORK_RES WriteTextToFile(int fileDes, char* data, size_t dataLen)
+{
+    assert(data != NULL);
+
+    if (fileDes < 0) {
+        printf(RED "WriteFileToFile: WRONG FILE DESCRIPTOR" COLOR_RESET);
+        exit(WRIN);
+    }
+
+    for (size_t ind = 0; ind < dataLen; ind++) {
+        if (data[ind] == '\0') data[ind] = '\n';
+    }
+    write(fileDes, data, dataLen);
+    
 }
 
 WORK_RES ClearFileData(FileData *data)
