@@ -136,9 +136,7 @@ int CompStrReversed(const void *firstLinePtr, const void *secondLinePtr)
             sInd--;
         } while (sInd > 0 && !isalpha(sLine[sInd]));
         
-        // printf(CYN "<%s><%c>\n<%s><%c>\n\n" COLOR_RESET, fLine, tolower(fLine[fInd]), sLine, tolower(sLine[sInd]));
         if (tolower(fLine[fInd]) != tolower(sLine[sInd])) {
-            // printf(YEL "<%s><%c>\n<%s><%c>\n\n" COLOR_RESET, fLine, tolower(fLine[fInd]), sLine, tolower(sLine[sInd]));
             return tolower(fLine[fInd]) - tolower(sLine[sInd]);
         }
     }

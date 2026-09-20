@@ -5,30 +5,18 @@ FileData GetFileFull(const char *FileName)
     assert(FileName != NULL);
 
     int fileDes = open(FileName, O_RDONLY, 0);
-    if (fileDes == -1) {
-        printf(RED "GetFileFull: NO FILE TO READ FROM IN GetFileFull\n" COLOR_RESET);
-        exit(FILEERR);
-    }
+    if (fileDes == -1) $err("NO FILE TO READ FROM IN GetFileFull", FILEERR);
 
     struct stat st;
-    if (fstat(fileDes, &st)) {
-        printf(RED "GetFileFull: ERROR IN FILE WHILE TRYING TO fstat\n" COLOR_RESET);
-        exit(FILEERR);
-    }
+    if (fstat(fileDes, &st)) $err("ERROR IN FILE WHILE TRYING TO fstat", FILEERR);
 
     FileData data = {};
 
     data.dataPtr = (char *) calloc(st.st_size + 1, sizeof(char));
-    if (data.dataPtr == NULL) {
-        printf(RED "GetFileFull: NOT ENOUGHT MEMORY TO READ FILE AS FULL\n" COLOR_RESET);
-        exit(NOMEM);
-    }
+    if (data.dataPtr == NULL) $err("NOT ENOUGHT MEMORY TO READ FILE AS FULL", NOMEM);
 
     int fileLen = read(fileDes, (void *) data.dataPtr, st.st_size);
-    if (fileLen < 0) {
-        printf(RED "GetFileFull: ERROR WHILE READING FROM FILE\n" COLOR_RESET);
-        exit(FILEERR);
-    }
+    if (fileLen < 0) $err("ERROR WHILE READING FROM FILE", FILEERR);
 
     data.dataPtr = (char *) realloc(data.dataPtr, fileLen + 1);
     *(data.dataPtr + fileLen) = '\0';
@@ -37,10 +25,8 @@ FileData GetFileFull(const char *FileName)
 
     data.indexDyn = (String *) calloc(MINNUM, sizeof(String));
     size_t indMax = MINNUM;
-    if (data.indexDyn == NULL) {
-        printf(RED "GetFileFull: NOT ENOUGHT MEMORY FOR INDEX\n" COLOR_RESET);
-        exit(NOMEM);
-    }
+    if (data.indexDyn == NULL) $err("NOT ENOUGHT MEMORY FOR INDEX", NOMEM);
+    
     *data.indexDyn = {.str = data.dataPtr};
     data.indLen++;
 
@@ -58,10 +44,8 @@ FileData GetFileFull(const char *FileName)
             if (indMax == data.indLen) {
                 indMax *= 2;
                 String *temp = (String *) realloc(data.indexDyn, indMax * sizeof(String));
-                if (temp == NULL) {
-                    printf(RED "GetFileFull: NOT ENOUGHT MEMORY FOR INDEX RESYZE\n" COLOR_RESET);
-                    exit(NOMEM);
-                }
+                if (temp == NULL) $err("NOT ENOUGHT MEMORY FOR INDEX RESYZE", NOMEM);
+                
                 data.indexDyn = temp;
             }
         }
@@ -77,10 +61,7 @@ WORK_RES WriteStringsToFile(int fileDes, String *data, size_t elNum)
 {
     assert(data != NULL);
 
-    if (fileDes < 0) {
-        printf(RED "WriteStringsToFile: WRONG FILE DESCRIPTOR" COLOR_RESET);
-        exit(WRIN);
-    }
+    if (fileDes < 0) $err("WRONG FILE DESCRIPTOR", WRIN);
 
     for (size_t ind = 0; ind < elNum; ind++) {
         ((data + ind) -> str)[(data + ind)->len - 1] = '\n';
@@ -96,16 +77,14 @@ WORK_RES WriteTextToFile(int fileDes, char* data, size_t dataLen)
 {
     assert(data != NULL);
 
-    if (fileDes < 0) {
-        printf(RED "WriteFileToFile: WRONG FILE DESCRIPTOR" COLOR_RESET);
-        exit(WRIN);
-    }
+    if (fileDes < 0) $err("WRONG FILE DESCRIPTOR", WRIN);
 
     for (size_t ind = 0; ind < dataLen; ind++) {
         if (data[ind] == '\0') data[ind] = '\n';
     }
-    write(fileDes, data, dataLen);
-    
+    write(fileDes, data, (unsigned int) dataLen);
+
+    return OK;
 }
 
 WORK_RES ClearFileData(FileData *data)
