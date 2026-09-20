@@ -4,6 +4,10 @@
  */
 #ifndef BASIC_H
 #define BASIC_H
+
+#include <stdlib.h>
+#include <stdio.h>
+
 /**
  * @brief Work of function avalible results.
  */
@@ -25,6 +29,7 @@ struct String {
 };
 
 
+//----------------------------------------------------- COLORS ------------------------------------------------------------------------
 /**
  * Basic colors
  */
@@ -38,21 +43,24 @@ struct String {
 #define WHT "\e[0;37m"
 #define COLOR_RESET "\e[0m"
 
+//----------------------------------------------------- PRINTING VARS AND ERRORS ------------------------------------------------------------------------
+
+
 #define toStr(str) #str
 
 static void InfoPrintfInt      (int var, const char *varName, const char *file, int line);
-static void InfoPrintfStr      (char *var, const char *varName, const char *file, int line);
+static void InfoPrintfStr      (const char *var, const char *varName, const char *file, int line);
 static void InfoPrintfC        (char var, const char *varName, const char *file, int line);
 static void InfoPrintfDouble   (double var, const char *varName, const char *file, int line);
 static void InfoPrintfLlu      (size_t var, const char *varName, const char *file, int line);
 
 static WORK_RES ErrorPrintf(const char *errMess, int line, const char *file, WORK_RES ErrCode);
 
-#define $int(Varible) InfoPrintfInt(FunctionName, Varible, toStr(Varible), __LINE__, __FILE__)
-#define $str(Varible) InfoPrintfStr(FunctionName, Varible, toStr(Varible), __LINE__, __FILE__)
-#define $c  (Varible) InfoPrintfC(FunctionName, Varible, toStr(Varible), __LINE__, __FILE__)
-#define $dbl(Varible) InfoPrintfDouble(FunctionName, Varible, toStr(Varible), __LINE__, __FILE__)
-#define $llu(Varible) InfoPrintfLlu(FunctionName, Varible, toStr(Varible))
+#define $int(Varible) InfoPrintfInt(Varible, toStr(Varible), __FILE__, __LINE__)
+#define $str(Varible) InfoPrintfStr(Varible, toStr(Varible), __FILE__, __LINE__)
+#define $c(Varible) InfoPrintfC(Varible, toStr(Varible), __FILE__, __LINE__)
+#define $dbl(Varible) InfoPrintfDouble(Varible, toStr(Varible), __FILE__, __LINE__)
+#define $llu(Varible) InfoPrintfLlu(Varible, toStr(Varible))
 #define $err(ErrorMessage, ErrCode) ErrorPrintf(ErrorMessage, __LINE__, __FILE__, ErrCode)
 
 static void InfoPrintfInt(int var, const char *varName, const char *file, int line)
@@ -60,7 +68,7 @@ static void InfoPrintfInt(int var, const char *varName, const char *file, int li
     fprintf(stderr, YEL "%s, %d:%s %s = <%s%d%s>\n", file, line, COLOR_RESET, varName, CYN, var, COLOR_RESET);
 }
 
-static void InfoPrintfStr(char *var, const char *varName, const char *file, int line)
+static void InfoPrintfStr(const char *var, const char *varName, const char *file, int line)
 {
     fprintf(stderr, YEL "%s, %d:%s %s = <%s%s%s>\n", file, line, COLOR_RESET, varName, CYN, var, COLOR_RESET);
 }
@@ -86,6 +94,5 @@ static WORK_RES ErrorPrintf(const char *errMess, int line, const char *file, WOR
     fprintf(stderr, CYN "%s, %d: %s%s\n" COLOR_RESET, file, line, RED, errMess);
     exit(ErrCode);
 }
-
 
 #endif

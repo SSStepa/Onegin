@@ -4,12 +4,18 @@
 #include "../headers/sorting.h"
 #include "../headers/fileWork.h"
 #include "../headers/basic.h"
+#include "../headers/flags.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-    FileData data = GetFileFull("Onegin.txt");
+    const char *FileToRead = "Onegin.txt";
+    const char *FileToWrite = "output.txt";
 
-    int fileOut = open("output.txt", O_WRONLY, 0);
+    FlagsParse(argc, argv, &FileToRead, &FileToWrite);
+
+    FileData data = GetFileFull(FileToRead);
+
+    int fileOut = open(FileToWrite, O_WRONLY, 0);
     if (fileOut == -1) $err("NO FILE FOR OUTPUT", FILEERR);
 
     my_qsort(data.indexDyn, data.indLen, sizeof(data.indexDyn[0]), CompStrNormal);
