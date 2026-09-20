@@ -19,4 +19,9 @@ const char *const OPTS = "i:o:";
  */
 WORK_RES FlagsParse(int argc, char *argv[], const char **FileToReadFrom, const char **FileToWriteTo);
 
+/**
+ * @brief shows help about flags
+ */
+void ShowHelp();
+
 #endif
