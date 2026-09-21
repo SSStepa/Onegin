@@ -8,14 +8,20 @@ FileData GetFileFull(const char *fileName)
 
     TakeInfoFromFile(&data, fileName);
 
-    data.indexDyn = (String *) calloc(MINNUM, sizeof(String));
-    size_t indMax = MINNUM;
+    char *indLine = data.dataPtr;
+    while (indLine != 0 && indLine < (data.dataPtr + data.dataLen)) {
+        indLine = strchr(indLine + 1, '\n');
+        data.indLen++;
+    }
+
+    data.indexDyn = (String *) calloc(data.indLen, sizeof(String));
     if (data.indexDyn == NULL) $err("NOT ENOUGHT MEMORY FOR INDEX", NOMEM);
     
     *data.indexDyn = {.str = data.dataPtr};
-    data.indLen++;
 
+    data.indLen = 1;
     size_t lineLen = 1;
+
     for (size_t ind = 0; ind < data.dataLen; ind++, lineLen++){
         if (data.dataPtr[ind] == '\n') {
             data.dataPtr[ind] = '\0';
@@ -25,14 +31,6 @@ FileData GetFileFull(const char *fileName)
 
             // point to new line
             (data.indexDyn + data.indLen++) -> str = &data.dataPtr[ind + 1];
-
-            if (indMax == data.indLen) {
-                indMax *= 2;
-                String *temp = (String *) realloc(data.indexDyn, indMax * sizeof(String));
-                if (temp == NULL) $err("NOT ENOUGHT MEMORY FOR INDEX RESYZE", NOMEM);
-                
-                data.indexDyn = temp;
-            }
         }
     }
     (data.indexDyn + data.indLen - 1) -> len = lineLen;
@@ -48,9 +46,8 @@ WORK_RES TakeInfoFromFile(FileData *data, const char *fileName)
     int fileDes = open(fileName, O_RDONLY, 0);
     if (fileDes == -1) $err("NO FILE TO READ FROM IN GetFileFull", FILEERR);
 
-    struct stat st;
+    struct stat st = {};
     if (fstat(fileDes, &st)) $err("ERROR IN FILE WHILE TRYING TO fstat", FILEERR);
-
 
     data -> dataPtr = (char *) calloc(st.st_size + 1, sizeof(char));
     if (data ->dataPtr == NULL) $err("NOT ENOUGHT MEMORY TO READ FILE AS FULL", NOMEM);

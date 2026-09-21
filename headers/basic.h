@@ -29,7 +29,7 @@ struct String {
 };
 
 
-//----------------------------------------------------- COLORS ------------------------------------------------------------------------
+//------------------------------------------------------------- COLORS ------------------------------------------------------------------------
 /**
  * Basic colors
  */
@@ -60,7 +60,7 @@ static WORK_RES ErrorPrintf(const char *errMess, int line, const char *file, WOR
 #define $str(Varible) InfoPrintfStr(Varible, toStr(Varible), __FILE__, __LINE__)
 #define $c(Varible) InfoPrintfC(Varible, toStr(Varible), __FILE__, __LINE__)
 #define $dbl(Varible) InfoPrintfDouble(Varible, toStr(Varible), __FILE__, __LINE__)
-#define $llu(Varible) InfoPrintfLlu(Varible, toStr(Varible))
+#define $llu(Varible) InfoPrintfLlu(Varible, toStr(Varible), __FILE__, __LINE__)
 #define $err(ErrorMessage, ErrCode) ErrorPrintf(ErrorMessage, __LINE__, __FILE__, ErrCode)
 
 static void InfoPrintfInt(int var, const char *varName, const char *file, int line)

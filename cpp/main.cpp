@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-    const char *FileToRead = "Onegin.txt";
+    const char *FileToRead  = "Onegin.txt";
     const char *FileToWrite = "output.txt";
 
     FlagsParse(argc, argv, &FileToRead, &FileToWrite);

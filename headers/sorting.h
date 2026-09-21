@@ -82,7 +82,7 @@ int CompStrReversed(const void *firstLinePtr, const void *secondLinePtr);
   * @param firstPl pointer to first place for change
   * @param secondPl pointer to second place for change
   */
-#define MacroChangeMamory(buff, type, firstPl, secondPl) \
+#define MACRO_CHANGE_MAMORY(buff, type, firstPl, secondPl) \
     buff = *((type *) (firstPl)); \
     *((type *) (firstPl)) = *((type *) (secondPl)); \
     *((type *) (secondPl)) = buff; \

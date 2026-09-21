@@ -63,23 +63,23 @@ WORK_RES SwapElls(unsigned char *firstPtr, unsigned char *secondPtr, size_t elSi
 
     // first stage - fill main part
     while (elSize/sizeof(buff) > 0) {
-        MacroChangeMamory(buff, unsigned long long, firstPtr, secondPtr);       
+        MACRO_CHANGE_MAMORY(buff, unsigned long long, firstPtr, secondPtr);       
         elSize -= sizeof(buff);
     }
 
     // second stage - fill last part (max 7 bites)
     if (elSize >= sizeof(int)) {
-        MacroChangeMamory(buffInt, int, firstPtr, secondPtr);
+        MACRO_CHANGE_MAMORY(buffInt, int, firstPtr, secondPtr);
         elSize -= sizeof(int);
     }
 
     if (elSize >= sizeof(short)) {
-        MacroChangeMamory(buffShort, short, firstPtr, secondPtr);
+        MACRO_CHANGE_MAMORY(buffShort, short, firstPtr, secondPtr);
         elSize -= sizeof(short);
     }
 
     if (elSize == sizeof(char)) {
-        MacroChangeMamory(buffChar, char, firstPtr, secondPtr);
+        MACRO_CHANGE_MAMORY(buffChar, char, firstPtr, secondPtr);
     }
 
     return OK;
