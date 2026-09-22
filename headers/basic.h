@@ -15,7 +15,7 @@ enum WORK_RES {
     OK = 0, // all good
     WRIN = 1, // function got bad args
     NOMEM = 2, // not enought memory
-    FILEERR = 3 // no file to open.
+    FILEERR = 4 // no file to open.
 };
 
 /**
@@ -91,7 +91,7 @@ static void InfoPrintfDouble(double var, const char *varName, const char *file, 
 
 static WORK_RES ErrorPrintf(const char *errMess, int line, const char *file, WORK_RES ErrCode)
 {
-    fprintf(stderr, CYN "%s, %d:%s %s(%d) %s%s\n" COLOR_RESET, file, line,COLOR_RESET, toStr(ErrCode), ErrCode, RED, errMess);
+    fprintf(stderr, CYN "%s, %d:%s %s:%d %s%s\n" COLOR_RESET, file, line,COLOR_RESET, toStr(ErrCode), ErrCode, RED, errMess);
     return ErrCode;
 }
 
