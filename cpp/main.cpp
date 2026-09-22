@@ -8,7 +8,8 @@
 
 int main(int argc, char *argv[])
 {
-    const char *FileToRead  = "Onegin.txt";
+    WORK_RES status = OK;
+    const char *FileToRead  = "Oneggin.txt";
     const char *FileToWrite = "output.txt";
 
     FlagsParse(argc, argv, &FileToRead, &FileToWrite);
@@ -19,10 +20,14 @@ int main(int argc, char *argv[])
     if (fileOut == -1) $err("NO FILE FOR OUTPUT", FILEERR);
 
     my_qsort(data.indexDyn, data.indLen, sizeof(data.indexDyn[0]), CompStrNormal);
-    WriteStringsToFile(fileOut, data.indexDyn, data.indLen);
+    if ((status = WriteStringsToFile(fileOut, data.indexDyn, data.indLen)) != OK) {
+        exit(status);
+    }
 
     qsort(data.indexDyn, data.indLen, sizeof(data.indexDyn[0]), CompStrReversed);
-    WriteStringsToFile(fileOut, data.indexDyn, data.indLen);
+    if((status = WriteStringsToFile(fileOut, data.indexDyn, data.indLen)) != OK) {
+        exit(status);
+    }
 
     WriteTextToFile(fileOut, data.dataPtr, data.dataLen);
 

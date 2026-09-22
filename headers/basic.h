@@ -91,8 +91,8 @@ static void InfoPrintfDouble(double var, const char *varName, const char *file, 
 
 static WORK_RES ErrorPrintf(const char *errMess, int line, const char *file, WORK_RES ErrCode)
 {
-    fprintf(stderr, CYN "%s, %d: %s%s\n" COLOR_RESET, file, line, RED, errMess);
-    exit(ErrCode);
+    fprintf(stderr, CYN "%s, %d:%s %s(%d) %s%s\n" COLOR_RESET, file, line,COLOR_RESET, toStr(ErrCode), ErrCode, RED, errMess);
+    return ErrCode;
 }
 
 #endif
