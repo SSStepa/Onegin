@@ -7,6 +7,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
 
 /**
  * @brief Work of function avalible results.
@@ -46,21 +48,24 @@ struct String {
 //----------------------------------------------------- PRINTING VARS AND ERRORS ------------------------------------------------------------------------
 
 
-#define toStr(str) #str
+#define TO_STR(str) #str
+
+const char * const LOG_FILE = "log.txt";
 
 static void InfoPrintfInt      (int var, const char *varName, const char *file, int line);
 static void InfoPrintfStr      (const char *var, const char *varName, const char *file, int line);
 static void InfoPrintfC        (char var, const char *varName, const char *file, int line);
 static void InfoPrintfDouble   (double var, const char *varName, const char *file, int line);
 static void InfoPrintfLlu      (size_t var, const char *varName, const char *file, int line);
+static WORK_RES SetUpLog();
 
 static WORK_RES ErrorPrintf(const char *errMess, int line, const char *file, WORK_RES ErrCode);
 
-#define $int(Varible) InfoPrintfInt(Varible, toStr(Varible), __FILE__, __LINE__)
-#define $str(Varible) InfoPrintfStr(Varible, toStr(Varible), __FILE__, __LINE__)
-#define $c(Varible) InfoPrintfC(Varible, toStr(Varible), __FILE__, __LINE__)
-#define $dbl(Varible) InfoPrintfDouble(Varible, toStr(Varible), __FILE__, __LINE__)
-#define $llu(Varible) InfoPrintfLlu(Varible, toStr(Varible), __FILE__, __LINE__)
+#define $int(Varible) InfoPrintfInt(Varible, TO_STR(Varible), __FILE__, __LINE__)
+#define $str(Varible) InfoPrintfStr(Varible, TO_STR(Varible), __FILE__, __LINE__)
+#define $c(Varible) InfoPrintfC(Varible, TO_STR(Varible), __FILE__, __LINE__)
+#define $dbl(Varible) InfoPrintfDouble(Varible, TO_STR(Varible), __FILE__, __LINE__)
+#define $llu(Varible) InfoPrintfLlu(Varible, TO_STR(Varible), __FILE__, __LINE__)
 #define $err(ErrorMessage, ErrCode) ErrorPrintf(ErrorMessage, __LINE__, __FILE__, ErrCode)
 
 static void InfoPrintfInt(int var, const char *varName, const char *file, int line)
@@ -91,8 +96,20 @@ static void InfoPrintfDouble(double var, const char *varName, const char *file, 
 
 static WORK_RES ErrorPrintf(const char *errMess, int line, const char *file, WORK_RES ErrCode)
 {
-    fprintf(stderr, CYN "%s, %d:%s %s:%d %s%s\n" COLOR_RESET, file, line,COLOR_RESET, toStr(ErrCode), ErrCode, RED, errMess);
+    FILE *fileLog = fopen(LOG_FILE, "a"); 
+    fprintf(stderr, CYN "%s, %d:%s %s:%d %s%s\n" COLOR_RESET, file, line, COLOR_RESET, TO_STR(ErrCode), ErrCode, RED, errMess);
+    fprintf(fileLog, "%s, %d: %s:%d %s\n", file, line, TO_STR(ErrCode), ErrCode, errMess);
+
+    fclose(fileLog);
     return ErrCode;
+}
+
+static WORK_RES SetUpLog()
+{
+    FILE *fileLog = fopen(LOG_FILE, "w");
+    if (fileLog == NULL) return $err("PROBLEM WITH LOG FILE", FILEERR);
+    fclose(fileLog);
+    return OK;
 }
 
 #endif

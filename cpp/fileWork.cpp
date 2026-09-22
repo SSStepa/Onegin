@@ -3,24 +3,21 @@
 FileData GetFileFull(const char *fileName) 
 {
     assert(fileName != NULL);
-    WORK_RES status = OK;
 
     FileData data = {};
 
-    if ((status = TakeInfoFromFile(&data, fileName)) != OK) {
-        exit(status);
-    }
+    data.ErrCode = OK;
 
-    char *indLine = data.dataPtr;
-    while (indLine != 0 && indLine < (data.dataPtr + data.dataLen)) {
-        indLine = strchr(indLine + 1, '\n');
-        data.indLen++;
-    }
+    if ((data.ErrCode = TakeInfoFromFile(&data, fileName)) != OK)
+        return data;
+
+    if ((data.ErrCode = CountEls(&data.indLen, data.dataPtr, data.dataLen, '\n')) != OK)
+        return data;
 
     data.indexDyn = (String *) calloc(data.indLen, sizeof(String));
     if (data.indexDyn == NULL) {
-        $err("NOT ENOUGHT MEMORY FOR INDEX", NOMEM);
-        exit(NOMEM);
+        data.ErrCode = $err("NOT ENOUGHT MEMORY FOR INDEX", NOMEM);
+        return data;
     }
     
     *data.indexDyn = {.str = data.dataPtr};
@@ -35,7 +32,6 @@ FileData GetFileFull(const char *fileName)
             (data.indexDyn + data.indLen - 1) -> len = lineLen;
             lineLen = 0;
 
-            // point to new line
             (data.indexDyn + data.indLen++) -> str = &data.dataPtr[ind + 1];
         }
     }
@@ -111,45 +107,58 @@ WORK_RES ClearFileData(FileData *data)
     return OK;
 }
 
-char **GetFileInLines(const char *fileName, size_t *dataSize)
+WORK_RES CountEls(size_t *amount, char *arr, size_t  arrLen, char El)
 {
-    assert(fileName != NULL);
-    assert(dataSize != NULL);
-
-    FILE *file = fopen(fileName, "r");
-    if (file == NULL) {
-        printf(RED "ERROR: NO FILE\n" COLOR_RESET);
-        exit(FILEERR);
+    assert(arr != 0);
+    
+    char *indLine = arr;
+    while (indLine != 0 && indLine < (arr + arrLen)) {
+        indLine = strchr(indLine + 1, El);
+        (*amount)++;
     }
 
-    size_t dataLen = MINNUM;
-    char **data = (char **) calloc(dataLen, sizeof(char *));
-    if (data == NULL) {
-        printf(RED "ERROR: NOT ENOUGH MEMORY\n" COLOR_RESET);
-        exit(NOMEM);
-    }
-
-    size_t ind = 0;
-
-    char buff[MAXBUFF] = "";
-
-    while (fgets(buff, MAXBUFF, file)) {
-        data[ind++] = strdup(buff);
-        if (ind == dataLen) {
-            dataLen *= 2;
-            char **temp = (char **) realloc(data, dataLen*sizeof(char *));
-            
-            if (data == NULL) {
-            printf(RED "ERROR: NOT ENOUGH MEMORY\n" COLOR_RESET);
-            exit(NOMEM);
-            }
-            data = temp;
-        }
-    }
-
-    data = (char **) realloc(data, ind*sizeof(char *));
-    *dataSize = ind;
-
-    return data;
-
+    return OK;
 }
+
+// char **GetFileInLines(const char *fileName, size_t *dataSize)
+// {
+//     assert(fileName != NULL);
+//     assert(dataSize != NULL);
+
+//     FILE *file = fopen(fileName, "r");
+//     if (file == NULL) {
+//         printf(RED "ERROR: NO FILE\n" COLOR_RESET);
+//         exit(FILEERR);
+//     }
+
+//     size_t dataLen = MINNUM;
+//     char **data = (char **) calloc(dataLen, sizeof(char *));
+//     if (data == NULL) {
+//         printf(RED "ERROR: NOT ENOUGH MEMORY\n" COLOR_RESET);
+//         exit(NOMEM);
+//     }
+
+//     size_t ind = 0;
+
+//     char buff[MAXBUFF] = "";
+
+//     while (fgets(buff, MAXBUFF, file)) {
+//         data[ind++] = strdup(buff);
+//         if (ind == dataLen) {
+//             dataLen *= 2;
+//             char **temp = (char **) realloc(data, dataLen*sizeof(char *));
+            
+//             if (data == NULL) {
+//             printf(RED "ERROR: NOT ENOUGH MEMORY\n" COLOR_RESET);
+//             exit(NOMEM);
+//             }
+//             data = temp;
+//         }
+//     }
+
+//     data = (char **) realloc(data, ind*sizeof(char *));
+//     *dataSize = ind;
+
+//     return data;
+
+// }

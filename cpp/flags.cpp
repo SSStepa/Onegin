@@ -14,12 +14,14 @@ WORK_RES FlagsParse(int argc, char *argv[], const char **FileToReadFrom, const c
         case 'o':
             *FileToWriteTo = optarg;
             break;
+
         case 'h':
             ShowHelp();
-            exit(0);
-        
+            break;
+
         default:
             $err("BAD FLAGS IN CALL", WRIN);
+            break;
         }
     }
 

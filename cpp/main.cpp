@@ -6,8 +6,13 @@
 #include "../headers/basic.h"
 #include "../headers/flags.h"
 
+// TODO:
+// - убрать exit
+// - вынести в отдельную функцию
 int main(int argc, char *argv[])
 {
+    SetUpLog();
+
     WORK_RES status = OK;
     const char *FileToRead  = "Onegin.txt";
     const char *FileToWrite = "output.txt";
@@ -16,20 +21,23 @@ int main(int argc, char *argv[])
 
     FileData data = GetFileFull(FileToRead);
 
+    if (data.ErrCode != OK)
+        return data.ErrCode;
+
     int fileOut = open(FileToWrite, O_WRONLY, 0);
     if (fileOut == -1) {
         $err("NO FILE FOR OUTPUT", FILEERR);
-        exit(FILEERR);
+        return FILEERR;
     }
 
     my_qsort(data.indexDyn, data.indLen, sizeof(data.indexDyn[0]), CompStrNormal);
     if ((status = WriteStringsToFile(fileOut, data.indexDyn, data.indLen)) != OK) {
-        exit(status);
+        return status;
     }
 
     qsort(data.indexDyn, data.indLen, sizeof(data.indexDyn[0]), CompStrReversed);
     if((status = WriteStringsToFile(fileOut, data.indexDyn, data.indLen)) != OK) {
-        exit(status);
+        return status;
     }
 
     WriteTextToFile(fileOut, data.dataPtr, data.dataLen);

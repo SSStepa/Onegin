@@ -38,6 +38,7 @@ const int MAXBUFF = 100;
  * indLen amount of lines.
  */
 struct FileData {
+    WORK_RES ErrCode;
     char   *dataPtr;
     size_t dataLen;
     String *firstLine;
@@ -105,5 +106,12 @@ FileData GetFileFull(const char *FileName);
  * @return result of work in terms of WORK_RES
  */
 WORK_RES TakeInfoFromFile(FileData *data, const char *fileName);
+
+/**
+ * finds amount of all Els in range from begin to end.
+ * 
+ * @return result of work in terms of WORK_RES
+ */
+WORK_RES CountEls(size_t *amount, char *arr, size_t arrLen, char El);
 
 #endif
