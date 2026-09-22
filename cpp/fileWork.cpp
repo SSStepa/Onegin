@@ -3,10 +3,13 @@
 FileData GetFileFull(const char *fileName) 
 {
     assert(fileName != NULL);
+    WORK_RES status = OK;
 
     FileData data = {};
 
-    TakeInfoFromFile(&data, fileName);
+    if ((status = TakeInfoFromFile(&data, fileName)) != OK) {
+        exit(status);
+    }
 
     char *indLine = data.dataPtr;
     while (indLine != 0 && indLine < (data.dataPtr + data.dataLen)) {
@@ -15,7 +18,10 @@ FileData GetFileFull(const char *fileName)
     }
 
     data.indexDyn = (String *) calloc(data.indLen, sizeof(String));
-    if (data.indexDyn == NULL) $err("NOT ENOUGHT MEMORY FOR INDEX", NOMEM);
+    if (data.indexDyn == NULL) {
+        $err("NOT ENOUGHT MEMORY FOR INDEX", NOMEM);
+        exit(NOMEM);
+    }
     
     *data.indexDyn = {.str = data.dataPtr};
 
@@ -44,16 +50,16 @@ WORK_RES TakeInfoFromFile(FileData *data, const char *fileName)
     assert(fileName != NULL);
 
     int fileDes = open(fileName, O_RDONLY, 0);
-    if (fileDes == -1) $err("NO FILE TO READ FROM IN GetFileFull", FILEERR);
+    if (fileDes == -1) return $err("NO FILE TO READ FROM IN GetFileFull", FILEERR);
 
     struct stat st = {};
-    if (fstat(fileDes, &st)) $err("ERROR IN FILE WHILE TRYING TO fstat", FILEERR);
+    if (fstat(fileDes, &st)) return $err("ERROR IN FILE WHILE TRYING TO fstat", FILEERR);
 
     data -> dataPtr = (char *) calloc(st.st_size + 1, sizeof(char));
-    if (data ->dataPtr == NULL) $err("NOT ENOUGHT MEMORY TO READ FILE AS FULL", NOMEM);
+    if (data ->dataPtr == NULL) return $err("NOT ENOUGHT MEMORY TO READ FILE AS FULL", NOMEM);
 
     int fileLen = read(fileDes, (void *) data -> dataPtr, st.st_size);
-    if (fileLen < 0) $err("ERROR WHILE READING FROM FILE", FILEERR);
+    if (fileLen < 0) return $err("ERROR WHILE READING FROM FILE", FILEERR);
 
     data -> dataPtr = (char *) realloc(data -> dataPtr, fileLen + 1);
     *(data -> dataPtr + fileLen) = '\0';
@@ -69,7 +75,7 @@ WORK_RES WriteStringsToFile(int fileDes, String *data, size_t elNum)
 {
     assert(data != NULL);
 
-    if (fileDes < 0) $err("WRONG FILE DESCRIPTOR", WRIN);
+    if (fileDes < 0) return $err("WRONG FILE DESCRIPTOR", WRIN);
 
     for (size_t ind = 0; ind < elNum; ind++) {
         ((data + ind) -> str)[(data + ind)->len - 1] = '\n';
@@ -85,7 +91,7 @@ WORK_RES WriteTextToFile(int fileDes, char* data, size_t dataLen)
 {
     assert(data != NULL);
 
-    if (fileDes < 0) $err("WRONG FILE DESCRIPTOR", WRIN);
+    if (fileDes < 0) return  $err("WRONG FILE DESCRIPTOR", WRIN);
 
     for (size_t ind = 0; ind < dataLen; ind++) {
         if (data[ind] == '\0') data[ind] = '\n';
