@@ -1,6 +1,6 @@
 #include "../headers/flags.h"
 
-WORK_RES FlagsParse(int argc, char *argv[], const char **FileToReadFrom, const char **FileToWriteTo)
+WORK_RES FlagsParse(int argc, char *const argv[], const char **FileToReadFrom, const char **FileToWriteTo)
 {
     int arg = 0;
 

@@ -38,24 +38,35 @@ const int MAXBUFF = 100;
  * indLen amount of lines.
  */
 struct FileData {
-    WORK_RES ErrCode;
-    char   *dataPtr;
-    size_t dataLen;
-    String *firstLine;
-    String *indexDyn;
+    WORK_RES  ErrCode;
+
+    char      *dataPtr;
+    size_t    dataLen;
+    
+    String    *firstLine;
+    String    *indexDyn;
     size_t    indLen; 
 };
 
 /**
- * @brief old variant of file coping as lines. uses coping by lines and callocs each line
+ * @brief funcion to read file as bull and then parse it into lines.
+ * 
+ * takes file at one read, changes all "\n" to "\0". sets up pointer to each string begining, string size, amount of strings in terms of FileData.
  * 
  * @param [in] FileName name of file to read from.
- * 
- * @param [out] dataSize pointer to varible to set amount of lines.
- * 
- * @return pointer to first line pointer.
+ * @return struct FileData.
  */
-char **GetFileInLines(const char *FileName, size_t *dataSize);
+FileData GetFileFull(const char *FileName);
+
+/**
+ * @brief opens file, reads full it, writes data to data and closes it
+ * 
+ * @param [out] data struct to write data in
+ * @param [in] fileName name of file to open
+ * 
+ * @return result of work in terms of WORK_RES
+ */
+WORK_RES TakeInfoFromFile(FileData *data, const char *fileName);
 
 /**
  * @brief frees all dynamic mamory from struct FileData.
@@ -87,25 +98,8 @@ WORK_RES WriteStringsToFile(int fileDes, String *data, size_t elNum);
  * @return result of work in terms of WORK_RES.
  */
 WORK_RES WriteTextToFile(int fileDes, char* data, size_t dataLen);
-/**
- * @brief funcion to read file as bull and then parse it into lines.
- * 
- * takes file at one read, changes all "\n" to "\0". sets up pointer to each string begining, string size, amount of strings in terms of FileData.
- * 
- * @param [in] FileName name of file to read from.
- * @return struct FileData.
- */
-FileData GetFileFull(const char *FileName);
 
-/**
- * @brief opens file, reads full it, writes data to data and closes it
- * 
- * @param [out] data struct to write data in
- * @param [in] fileName name of file to open
- * 
- * @return result of work in terms of WORK_RES
- */
-WORK_RES TakeInfoFromFile(FileData *data, const char *fileName);
+
 
 /**
  * finds amount of all Els in range from begin to end.
@@ -113,5 +107,17 @@ WORK_RES TakeInfoFromFile(FileData *data, const char *fileName);
  * @return result of work in terms of WORK_RES
  */
 WORK_RES CountEls(size_t *amount, char *arr, size_t arrLen, char El);
+
+/**
+ * OLD VERSION. NO MORE SUPPORT.
+ * @brief old variant of file coping as lines. uses coping by lines and callocs each line
+ * 
+ * @param [in] FileName name of file to read from.
+ * 
+ * @param [out] dataSize pointer to varible to set amount of lines.
+ * 
+ * @return pointer to first line pointer.
+ */
+// char **GetFileInLines(const char *FileName, size_t *dataSize);
 
 #endif

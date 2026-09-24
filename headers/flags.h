@@ -17,7 +17,7 @@ const char *const OPTS = "i:o:h";
  * 
  * @return result of work in terms of WORK_RES
  */
-WORK_RES FlagsParse(int argc, char *argv[], const char **FileToReadFrom, const char **FileToWriteTo);
+WORK_RES FlagsParse(int argc, const char *const argv[], const char **FileToReadFrom, const char **FileToWriteTo);
 
 /**
  * @brief shows help about flags

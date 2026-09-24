@@ -6,10 +6,8 @@
 #include "../headers/basic.h"
 #include "../headers/flags.h"
 
-// TODO:
-// - убрать exit
-// - вынести в отдельную функцию
-int main(int argc, char *argv[])
+// const argv
+int main(int argc, char *const argv[])
 {
     SetUpLog();
 

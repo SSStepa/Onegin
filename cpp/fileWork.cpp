@@ -19,7 +19,7 @@ FileData GetFileFull(const char *fileName)
         data.ErrCode = $err("NOT ENOUGHT MEMORY FOR INDEX", NOMEM);
         return data;
     }
-    
+ 
     *data.indexDyn = {.str = data.dataPtr};
 
     data.indLen = 1;
@@ -120,6 +120,7 @@ WORK_RES CountEls(size_t *amount, char *arr, size_t  arrLen, char El)
     return OK;
 }
 
+// Old version. No Longer support.
 // char **GetFileInLines(const char *fileName, size_t *dataSize)
 // {
 //     assert(fileName != NULL);
